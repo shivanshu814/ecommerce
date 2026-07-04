@@ -11,7 +11,7 @@ import React, {
 } from 'react'
 
 import { Product, User } from '../../../payload/payload-types'
-import { formatCurrency } from '../../../constants/currency'
+import { formatCurrency } from '@/constants/currency'
 import { useAuth } from '../Auth'
 import { CartItem, cartReducer } from './reducer'
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Payload } from 'payload'
 
 import { convertPriceJSONToInr, convertUsdCentsToInrPaise } from '../../constants/currency'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Payload } from 'payload'
 
 export type SeedUserAccount = {

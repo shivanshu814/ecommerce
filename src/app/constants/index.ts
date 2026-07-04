@@ -1,4 +1,4 @@
-import { formatCurrency, FREE_SHIPPING_THRESHOLD } from '../../constants/currency'
+import { formatCurrency, FREE_SHIPPING_THRESHOLD } from '@/constants/currency'
 
 export const inclusions = [
   {

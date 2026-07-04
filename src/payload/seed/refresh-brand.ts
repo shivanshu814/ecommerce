@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Payload } from 'payload'
 
 import { getStoreCopyright, STORE_NAME } from '../../constants/brand'

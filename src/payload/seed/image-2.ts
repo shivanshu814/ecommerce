@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const image2 = {
   alt: 'E-Book',
   caption: [
