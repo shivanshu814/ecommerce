@@ -5,6 +5,7 @@ import React, { useCallback } from 'react'
 
 import { STORE_NAME } from '../../../../constants/brand'
 import { Order } from '../../../../payload/payload-types'
+import { getAuthHeaders } from '../../../_utilities/authToken'
 import { Button } from '../../../_components/Button'
 import { Message } from '../../../_components/Message'
 import { priceFromJSON } from '../../../_components/Price'
@@ -51,7 +52,7 @@ export const CheckoutForm: React.FC = () => {
   const [error, setError] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, token } = useAuth()
   const { cart, cartTotal } = useCart()
 
   const handlePayment = useCallback(async () => {
@@ -69,6 +70,7 @@ export const CheckoutForm: React.FC = () => {
         {
           method: 'POST',
           credentials: 'include',
+          headers: getAuthHeaders(token),
         },
       )
 
@@ -99,9 +101,7 @@ export const CheckoutForm: React.FC = () => {
               {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: getAuthHeaders(token),
                 body: JSON.stringify({
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
@@ -145,7 +145,7 @@ export const CheckoutForm: React.FC = () => {
       setError(message)
       setIsLoading(false)
     }
-  }, [cart, cartTotal.raw, router, user?.email, user?.name])
+  }, [cart, cartTotal.raw, router, token, user?.email, user?.name])
 
   return (
     <div className={classes.form}>
