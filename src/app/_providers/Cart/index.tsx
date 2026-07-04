@@ -12,6 +12,7 @@ import React, {
 
 import { Product, User } from '../../../payload/payload-types'
 import { formatCurrency } from '@/constants/currency'
+import { getAuthHeaders } from '../../_utilities/authToken'
 import { useAuth } from '../Auth'
 import { CartItem, cartReducer } from './reducer'
 
@@ -45,7 +46,7 @@ const arrayHasItems = array => Array.isArray(array) && array.length > 0
 export const CartProvider = props => {
   // const { setTimedNotification } = useNotifications();
   const { children } = props
-  const { user, status: authStatus } = useAuth()
+  const { user, token, status: authStatus } = useAuth()
 
   const [cart, dispatchCart] = useReducer(cartReducer, {
     items: [],
@@ -158,15 +159,12 @@ export const CartProvider = props => {
       try {
         const syncCartToPayload = async () => {
           const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
-            // Make sure to include cookies with fetch
             credentials: 'include',
             method: 'PATCH',
             body: JSON.stringify({
               cart: flattenedCart,
             }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(token),
           })
 
           if (req.ok) {

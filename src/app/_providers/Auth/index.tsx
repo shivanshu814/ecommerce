@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { User } from '../../../payload/payload-types'
+import { getAuthHeaders, getAuthToken, setAuthToken } from '../../_utilities/authToken'
 
 // eslint-disable-next-line no-unused-vars
 type ResetPassword = (args: {
@@ -21,6 +22,7 @@ type Logout = () => Promise<void>
 
 type AuthContext = {
   user?: User | null
+  token?: string | null
   setUser: (user: User | null) => void // eslint-disable-line no-unused-vars
   logout: Logout
   login: Login
@@ -34,6 +36,7 @@ const Context = createContext({} as AuthContext)
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>()
+  const [token, setToken] = useState<string | null>(null)
 
   // used to track the single event of logging in or logging out
   // useful for `useEffect` hooks that should only run once
@@ -81,11 +84,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
 
       if (res.ok) {
-        const { user, errors } = await res.json()
+        const { user: loggedInUser, token: loginToken, errors } = await res.json()
         if (errors) throw new Error(errors[0].message)
-        setUser(user)
+        setUser(loggedInUser)
+        setToken(loginToken || null)
+        setAuthToken(loginToken || null)
         setStatus('loggedIn')
-        return user
+        return loggedInUser
       }
 
       throw new Error('Invalid login')
@@ -99,13 +104,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(token),
       })
 
       if (res.ok) {
         setUser(null)
+        setToken(null)
+        setAuthToken(null)
         setStatus('loggedOut')
       } else {
         throw new Error('An error occurred while attempting to logout.')
@@ -113,29 +118,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (e) {
       throw new Error('An error occurred while attempting to logout.')
     }
-  }, [])
+  }, [token])
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
+        const storedToken = getAuthToken()
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
           method: 'GET',
           credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: getAuthHeaders(storedToken),
         })
 
         if (res.ok) {
-          const { user: meUser } = await res.json()
+          const { user: meUser, token: meToken } = await res.json()
           setUser(meUser || null)
+          setToken(meToken || storedToken || null)
+          if (meToken || storedToken) {
+            setAuthToken(meToken || storedToken)
+          }
           setStatus(meUser ? 'loggedIn' : undefined)
         } else {
           throw new Error('An error occurred while fetching your account.')
         }
       } catch (e) {
         setUser(null)
-        throw new Error('An error occurred while fetching your account.')
+        setToken(null)
+        setAuthToken(null)
       }
     }
 
@@ -199,6 +208,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <Context.Provider
       value={{
         user,
+        token,
         setUser,
         login,
         logout,

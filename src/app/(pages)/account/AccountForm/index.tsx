@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '../../../_components/Button'
 import { Input } from '../../../_components/Input'
 import { Message } from '../../../_components/Message'
+import { getAuthHeaders } from '../../../_utilities/authToken'
 import { useAuth } from '../../../_providers/Auth'
 
 import classes from './index.module.scss'
@@ -21,7 +22,7 @@ type FormData = {
 const AccountForm: React.FC = () => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const { user, setUser } = useAuth()
+  const { user, token, setUser } = useAuth()
   const [changePassword, setChangePassword] = useState(false)
 
   const {
@@ -41,13 +42,10 @@ const AccountForm: React.FC = () => {
     async (data: FormData) => {
       if (user) {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
-          // Make sure to include cookies with fetch
           credentials: 'include',
           method: 'PATCH',
           body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: getAuthHeaders(token),
         })
 
         if (response.ok) {
@@ -67,7 +65,7 @@ const AccountForm: React.FC = () => {
         }
       }
     },
-    [user, setUser, reset],
+    [user, token, setUser, reset],
   )
 
   useEffect(() => {

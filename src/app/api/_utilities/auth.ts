@@ -36,19 +36,33 @@ export const getAuthenticatedUser = async (
 ): Promise<User | null> => {
   const token = getTokenFromRequest(req)
 
-  if (!token || !process.env.PAYLOAD_SECRET) {
+  if (!token) {
     return null
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.PAYLOAD_SECRET) as { id: string }
+    const decoded = jwt.verify(token, payload.secret) as {
+      id: string
+      collection?: string
+    }
 
-    return (await payload.findByID({
+    if (decoded.collection && decoded.collection !== 'users') {
+      return null
+    }
+
+    const users = await payload.find({
       collection: 'users',
-      id: decoded.id,
+      where: {
+        id: {
+          equals: decoded.id,
+        },
+      },
+      limit: 1,
       depth: 0,
       overrideAccess: true,
-    })) as User
+    })
+
+    return (users.docs[0] as User) || null
   } catch {
     return null
   }
