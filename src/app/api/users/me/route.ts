@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthenticatedUser } from '../../_utilities/auth'
 import { getPayloadClient } from '../../../../payload/payloadClient'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 export async function GET(req: NextRequest) {
   try {
     const payload = await getPayloadClient()

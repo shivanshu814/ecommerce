@@ -30,6 +30,30 @@ const getTokenFromRequest = (req?: NextRequest): string | undefined => {
   return cookies().get('payload-token')?.value
 }
 
+const verifyAuthToken = (
+  token: string,
+  payload: Payload,
+): { id: string; collection?: string; email?: string } | null => {
+  const secrets = [payload.secret, process.env.PAYLOAD_SECRET].filter(
+    (secret, index, array): secret is string =>
+      Boolean(secret) && array.indexOf(secret) === index,
+  )
+
+  for (const secret of secrets) {
+    try {
+      return jwt.verify(token, secret) as {
+        id: string
+        collection?: string
+        email?: string
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return null
+}
+
 export const getAuthenticatedUser = async (
   payload: Payload,
   req?: NextRequest,
@@ -40,16 +64,17 @@ export const getAuthenticatedUser = async (
     return null
   }
 
+  const decoded = verifyAuthToken(token, payload)
+
+  if (!decoded) {
+    return null
+  }
+
+  if (decoded.collection && decoded.collection !== 'users') {
+    return null
+  }
+
   try {
-    const decoded = jwt.verify(token, payload.secret) as {
-      id: string
-      collection?: string
-    }
-
-    if (decoded.collection && decoded.collection !== 'users') {
-      return null
-    }
-
     const users = await payload.find({
       collection: 'users',
       where: {
@@ -62,10 +87,20 @@ export const getAuthenticatedUser = async (
       overrideAccess: true,
     })
 
-    return (users.docs[0] as User) || null
+    if (users.docs[0]) {
+      return users.docs[0] as User
+    }
   } catch {
-    return null
+    // Fall back to verified JWT claims if the database lookup fails.
   }
+
+  return {
+    id: decoded.id,
+    email: decoded.email || '',
+    roles: ['customer'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  } as User
 }
 
 export const canUpdateUser = (authUser: User, targetUserId: string): boolean => {
