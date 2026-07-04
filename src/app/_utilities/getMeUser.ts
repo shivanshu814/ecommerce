@@ -28,7 +28,8 @@ export const getMeUser = async (args?: {
   try {
     const meUserReq = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
       headers: {
-        Authorization: `JWT ${token}`,
+        Authorization: `Bearer ${token}`,
+        Cookie: `payload-token=${token}`,
       },
       cache: 'no-store',
     })

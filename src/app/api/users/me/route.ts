@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getAuthenticatedUser, getTokenFromRequest } from '../../_utilities/auth'
 import { getPayloadClient } from '../../../../payload/payloadClient'
+import { getAuthenticatedUser, getTokenFromRequest } from '../../_utilities/auth'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'

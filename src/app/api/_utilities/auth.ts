@@ -3,8 +3,8 @@ import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 import type { Payload } from 'payload'
 
-import type { User } from '../../../payload/payload-types'
 import { checkRole } from '../../../payload/collections/Users/checkRole'
+import type { User } from '../../../payload/payload-types'
 
 export const getTokenFromRequest = (req?: NextRequest): string | undefined => {
   if (req) {
@@ -14,6 +14,9 @@ export const getTokenFromRequest = (req?: NextRequest): string | undefined => {
     }
 
     const authHeader = req.headers.get('authorization')
+    if (authHeader?.startsWith('JWT ')) {
+      return authHeader.slice(4)
+    }
     if (authHeader?.startsWith('Bearer ')) {
       return authHeader.slice(7)
     }

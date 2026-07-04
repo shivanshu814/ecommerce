@@ -121,34 +121,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [token])
 
   useEffect(() => {
+    let cancelled = false
+
     const fetchMe = async () => {
+      const storedToken = getAuthToken()
+
+      if (!storedToken) {
+        if (!cancelled) {
+          setUser(null)
+          setStatus(undefined)
+        }
+        return
+      }
+
       try {
-        const storedToken = getAuthToken()
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
           method: 'GET',
           credentials: 'include',
           headers: getAuthHeaders(storedToken),
         })
 
-        if (res.ok) {
-          const { user: meUser, token: meToken } = await res.json()
-          setUser(meUser || null)
-          setToken(meToken || storedToken || null)
-          if (meToken || storedToken) {
-            setAuthToken(meToken || storedToken)
-          }
-          setStatus(meUser ? 'loggedIn' : undefined)
-        } else {
-          throw new Error('An error occurred while fetching your account.')
+        if (cancelled) {
+          return
         }
-      } catch (e) {
-        setUser(null)
-        setToken(null)
-        setAuthToken(null)
+
+        if (!res.ok) {
+          return
+        }
+
+        const { user: meUser, token: meToken } = await res.json()
+
+        if (meUser) {
+          setUser(meUser)
+          setToken(meToken || storedToken)
+          setAuthToken(meToken || storedToken)
+          setStatus('loggedIn')
+        }
+      } catch {
+        // Keep existing session if /me fails transiently.
       }
     }
 
     fetchMe()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const forgotPassword = useCallback<ForgotPassword>(async args => {
