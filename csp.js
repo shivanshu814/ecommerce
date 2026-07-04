@@ -14,6 +14,7 @@ const policies = {
     'https://*.razorpay.com',
     'https://raw.githubusercontent.com',
     'https://picsum.photos',
+    'https://*.picsum.photos',
     'https://images.unsplash.com',
   ],
   'font-src': ["'self'"],

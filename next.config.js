@@ -17,6 +17,7 @@ const nextConfig = {
     domains: [
       'localhost',
       'picsum.photos',
+      'fastly.picsum.photos',
       'images.unsplash.com',
       process.env.NEXT_PUBLIC_SERVER_URL,
     ]
