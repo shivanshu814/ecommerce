@@ -1,12 +1,20 @@
 import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
+import type { NextRequest } from 'next/server'
 import type { Payload } from 'payload'
 
 import type { User } from '../../../payload/payload-types'
 import { checkRole } from '../../../payload/collections/Users/checkRole'
 
-export const getAuthenticatedUser = async (payload: Payload): Promise<User | null> => {
-  const token = cookies().get('payload-token')?.value
+const getTokenFromRequest = (req?: NextRequest): string | undefined => {
+  return req?.cookies.get('payload-token')?.value || cookies().get('payload-token')?.value
+}
+
+export const getAuthenticatedUser = async (
+  payload: Payload,
+  req?: NextRequest,
+): Promise<User | null> => {
+  const token = getTokenFromRequest(req)
 
   if (!token || !process.env.PAYLOAD_SECRET) {
     return null

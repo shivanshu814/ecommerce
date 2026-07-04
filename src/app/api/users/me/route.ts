@@ -1,28 +1,20 @@
-import jwt from 'jsonwebtoken'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
+import { getAuthenticatedUser } from '../../_utilities/auth'
 import { getPayloadClient } from '../../../../payload/payloadClient'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const payload = await getPayloadClient()
-    const token = cookies().get('payload-token')?.value
+    const authUser = await getAuthenticatedUser(payload, req)
 
-    if (!token || !process.env.PAYLOAD_SECRET) {
+    if (!authUser) {
       return NextResponse.json({ user: null })
     }
 
-    const decoded = jwt.verify(token, process.env.PAYLOAD_SECRET) as { id: string }
+    const token = req.cookies.get('payload-token')?.value
 
-    const user = await payload.findByID({
-      collection: 'users',
-      id: decoded.id,
-      depth: 0,
-      overrideAccess: false,
-    })
-
-    return NextResponse.json({ user, token })
+    return NextResponse.json({ user: authUser, token })
   } catch {
     return NextResponse.json({ user: null })
   }

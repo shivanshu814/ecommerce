@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     const payload = await getPayloadClient()
-    const authUser = await getAuthenticatedUser(payload)
+    const authUser = await getAuthenticatedUser(payload, req)
     const depth = req.nextUrl.searchParams.get('depth')
 
     if (!authUser) {
@@ -45,7 +45,7 @@ export async function PATCH(
 ) {
   try {
     const payload = await getPayloadClient()
-    const authUser = await getAuthenticatedUser(payload)
+    const authUser = await getAuthenticatedUser(payload, req)
 
     if (!authUser) {
       return NextResponse.json({ errors: [{ message: 'You are not authorized to perform this action.' }] }, { status: 401 })
