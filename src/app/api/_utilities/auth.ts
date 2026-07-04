@@ -6,7 +6,7 @@ import type { Payload } from 'payload'
 import type { User } from '../../../payload/payload-types'
 import { checkRole } from '../../../payload/collections/Users/checkRole'
 
-const getTokenFromRequest = (req?: NextRequest): string | undefined => {
+export const getTokenFromRequest = (req?: NextRequest): string | undefined => {
   if (req) {
     const cookieToken = req.cookies.get('payload-token')?.value
     if (cookieToken) {
