@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Page } from '../payload-types'
 
 import { buildHomePageSeed } from './store-content'

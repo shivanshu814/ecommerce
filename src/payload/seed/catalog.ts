@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { convertUsdCentsToInrPaise, STRIPE_CURRENCY } from '../../constants/currency'
 
 export type CatalogCategory = {

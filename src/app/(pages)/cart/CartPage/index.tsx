@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import { formatCurrency } from '../../../../constants/currency'
+import { formatCurrency } from '@/constants/currency'
 import { Page, Settings } from '../../../../payload/payload-types'
 import { Button } from '../../../_components/Button'
 import { LoadingShimmer } from '../../../_components/LoadingShimmer'

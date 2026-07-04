@@ -17,6 +17,8 @@
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "cross-env PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js NEXT_BUILD=true node dist/server.js",
     "build": "cross-env NODE_ENV=production yarn build:payload && yarn build:server && yarn copyfiles && yarn build:next",
+    "build:docker": "cross-env NODE_ENV=production yarn build:payload && yarn build:server && yarn copyfiles && cross-env PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js PAYLOAD_SECRET=docker-build-placeholder-secret-key next build",
+    "build:vercel": "cross-env NODE_ENV=production PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts yarn build:payload && cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts next build",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js NODE_ENV=production node dist/server.js",
     "eject": "yarn remove next react react-dom @next/eslint-plugin-next && ts-node eject.ts",
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,js}\" dist/",
@@ -29,6 +31,7 @@
   "dependencies": {
     "@payloadcms/bundler-webpack": "^1.0.0",
     "@payloadcms/db-mongodb": "^1.0.0",
+    "@payloadcms/next-payload": "0.1.11",
     "@payloadcms/plugin-cloud": "^2.0.0",
     "@payloadcms/plugin-nested-docs": "^1.0.8",
     "@payloadcms/plugin-redirects": "^1.0.0",

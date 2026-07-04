@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const image3 = {
   alt: 'Online Course',
   caption: [

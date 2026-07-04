@@ -8,8 +8,11 @@ export const LinkToRazorpayPayment: React.FC<{
   label?: string
 }> = props => {
   const { label, path } = props
-  const { value: razorpayPaymentID } = useFormFields(([fields]) => fields[path]) || {}
-  const { value: razorpayOrderID } = useFormFields(([fields]) => fields.razorpayOrderID) || {}
+  const { value: razorpayPaymentIDRaw } = useFormFields(([fields]) => fields[path]) || {}
+  const { value: razorpayOrderIDRaw } = useFormFields(([fields]) => fields.razorpayOrderID) || {}
+  const razorpayPaymentID =
+    typeof razorpayPaymentIDRaw === 'string' ? razorpayPaymentIDRaw : null
+  const razorpayOrderID = typeof razorpayOrderIDRaw === 'string' ? razorpayOrderIDRaw : null
 
   const paymentHref = razorpayPaymentID
     ? `https://dashboard.razorpay.com/app/payments/${razorpayPaymentID}`

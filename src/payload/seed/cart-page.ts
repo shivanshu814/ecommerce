@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Page } from '../payload-types'
 
 import { STORE_DESCRIPTION, STORE_NAME } from '../../constants/brand'

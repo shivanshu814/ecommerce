@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { APP_CURRENCY, APP_LOCALE, formatCurrency } from '../../../constants/currency'
+import { APP_CURRENCY, APP_LOCALE, formatCurrency } from '@/constants/currency'
 import { Product } from '../../../payload/payload-types'
 
 import classes from './index.module.scss'

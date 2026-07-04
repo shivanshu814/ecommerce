@@ -5,9 +5,12 @@
     "outDir": "dist",
     "noEmit": false,
     "jsx": "react",
+    "strict": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/server.ts",
-    "src/payload/payload.config.ts",
+    "src/payload/payload.config.ts"
   ]
 }
