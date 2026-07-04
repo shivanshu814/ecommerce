@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Fragment, useCallback, useState } from 'react'
 
 export const SeedButton: React.FC = () => {

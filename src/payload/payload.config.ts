@@ -16,8 +16,6 @@ import { Orders } from './collections/Orders'
 import { Pages } from './collections/Pages'
 import Products from './collections/Products'
 import Users from './collections/Users'
-import BeforeDashboard from './components/BeforeDashboard'
-import BeforeLogin from './components/BeforeLogin'
 import { createRazorpayOrder } from './endpoints/create-razorpay-order'
 import { seed } from './endpoints/seed'
 import { verifyRazorpayPayment } from './endpoints/verify-razorpay-payment'
@@ -39,10 +37,6 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(), // bundler-config
-    components: {
-      beforeLogin: [BeforeLogin],
-      beforeDashboard: [BeforeDashboard],
-    },
     webpack: config => {
       return {
         ...config,

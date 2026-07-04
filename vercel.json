@@ -1,5 +1,10 @@
 {
   "buildCommand": "yarn build:vercel",
   "installCommand": "yarn install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "functions": {
+    "pages/api/**/*.ts": {
+      "maxDuration": 60
+    }
+  }
 }
