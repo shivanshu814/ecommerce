@@ -25,5 +25,12 @@ export const Media: CollectionConfig = {
         },
       }),
     },
+    {
+      name: 'cdnUrl',
+      type: 'text',
+      admin: {
+        description: 'External image URL for serverless deployments without local file storage.',
+      },
+    },
   ],
 }

@@ -12,7 +12,7 @@ import payload from 'payload'
 
 import { seed } from './payload/seed'
 import { refreshBrand } from './payload/seed/refresh-brand'
-import { refreshCatalog } from './payload/seed/refresh-catalog'
+import { ensureCatalogMedia, refreshCatalog } from './payload/seed/refresh-catalog'
 import { refreshCurrency } from './payload/seed/refresh-currency'
 import { seedUsers } from './payload/seed/users'
 
@@ -43,6 +43,12 @@ const start = async (): Promise<void> => {
 
   if (process.env.PAYLOAD_REFRESH_CATALOG === 'true') {
     await refreshCatalog(payload)
+    process.exit()
+  }
+
+  if (process.env.PAYLOAD_FIX_MEDIA === 'true') {
+    await ensureCatalogMedia(payload)
+    payload.logger.info('Media URLs updated to external CDN.')
     process.exit()
   }
 

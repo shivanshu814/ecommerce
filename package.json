@@ -12,6 +12,8 @@
     "seed": "rm -rf media && cross-env PAYLOAD_SEED=true PAYLOAD_DROP_DATABASE=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:bulk": "rm -rf media && cross-env PAYLOAD_SEED=true SEED_BULK=true PAYLOAD_DROP_DATABASE=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:bulk-data": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/payload/seed/run-bulk-only.ts",
+    "seed:huge": "cross-env SEED_CATEGORY_COUNT=50 SEED_PRODUCT_COUNT=500 SEED_USER_COUNT=200 SEED_ORDER_COUNT=0 SEED_BATCH_SIZE=25 PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/payload/seed/run-bulk-only.ts",
+    "seed:fix-media": "cross-env PAYLOAD_FIX_MEDIA=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:users": "cross-env PAYLOAD_SEED_USERS=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:refresh-catalog": "cross-env PAYLOAD_REFRESH_CATALOG=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:refresh-currency": "cross-env PAYLOAD_REFRESH_CURRENCY=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",

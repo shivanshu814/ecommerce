@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import express from 'express'
 import path from 'path'
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
@@ -8,8 +9,11 @@ import payload from 'payload'
 import { seedBulk } from './bulk'
 
 const start = async (): Promise<void> => {
+  const app = express()
+
   await payload.init({
     secret: process.env.PAYLOAD_SECRET || '',
+    express: app,
     onInit: () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
     },

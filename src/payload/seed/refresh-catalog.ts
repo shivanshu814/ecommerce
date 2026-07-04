@@ -9,8 +9,10 @@ import {
   CATALOG_ASSETS,
   CATALOG_CATEGORIES,
   DEMO_CATEGORY_MEDIA,
+  DEMO_MEDIA_BY_ALT,
   formatSlug,
   getCatalogCategory,
+  getCatalogExternalImageUrl,
 } from './catalog'
 
 const chunk = <T>(items: T[], size: number): T[][] => {
@@ -33,6 +35,48 @@ const extractProductNumber = (title: string): number | null => {
   return match ? Number.parseInt(match[1], 10) : null
 }
 
+const applyExternalMediaUrl = async (
+  payload: Payload,
+  mediaId: string,
+  externalUrl: string,
+  currentCdnUrl?: string | null,
+): Promise<void> => {
+  if (currentCdnUrl?.startsWith('http')) {
+    return
+  }
+
+  await payload.update({
+    collection: 'media',
+    id: mediaId,
+    data: {
+      cdnUrl: externalUrl,
+    },
+  })
+}
+
+const refreshDemoMediaUrls = async (payload: Payload): Promise<void> => {
+  for (const [alt, imageKey] of Object.entries(DEMO_MEDIA_BY_ALT)) {
+    const existing = await payload.find({
+      collection: 'media',
+      where: {
+        alt: {
+          equals: alt,
+        },
+      },
+      limit: 1,
+    })
+
+    if (existing.docs[0]) {
+      await applyExternalMediaUrl(
+        payload,
+        existing.docs[0].id,
+        getCatalogExternalImageUrl(imageKey),
+        existing.docs[0].cdnUrl,
+      )
+    }
+  }
+}
+
 export const ensureCatalogMedia = async (payload: Payload): Promise<Record<string, string>> => {
   const assetsDir = path.resolve(__dirname, 'assets')
   const mediaMap: Record<string, string> = {}
@@ -40,6 +84,7 @@ export const ensureCatalogMedia = async (payload: Payload): Promise<Record<strin
   payload.logger.info('— Ensuring catalog media assets...')
 
   for (const asset of CATALOG_ASSETS) {
+    const externalUrl = getCatalogExternalImageUrl(asset.key)
     const existing = await payload.find({
       collection: 'media',
       where: {
@@ -51,6 +96,12 @@ export const ensureCatalogMedia = async (payload: Payload): Promise<Record<strin
     })
 
     if (existing.docs[0]) {
+      await applyExternalMediaUrl(
+        payload,
+        existing.docs[0].id,
+        externalUrl,
+        existing.docs[0].cdnUrl,
+      )
       mediaMap[asset.key] = existing.docs[0].id
       continue
     }
@@ -63,8 +114,11 @@ export const ensureCatalogMedia = async (payload: Payload): Promise<Record<strin
       },
     })
 
+    await applyExternalMediaUrl(payload, doc.id, externalUrl, doc.cdnUrl)
     mediaMap[asset.key] = doc.id
   }
+
+  await refreshDemoMediaUrls(payload)
 
   payload.logger.info(`   ${Object.keys(mediaMap).length} catalog images ready`)
 

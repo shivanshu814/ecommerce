@@ -25,11 +25,16 @@ const parseCount = (value: string | undefined, fallback: number): number => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
 }
 
+const parseOrderCount = (value: string | undefined, fallback: number): number => {
+  const parsed = Number.parseInt(value || '', 10)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback
+}
+
 export const getBulkSeedOptions = (): Required<BulkSeedOptions> => ({
   categoryCount: parseCount(process.env.SEED_CATEGORY_COUNT, 100),
   productCount: parseCount(process.env.SEED_PRODUCT_COUNT, 5000),
   userCount: parseCount(process.env.SEED_USER_COUNT, 1000),
-  orderCount: parseCount(process.env.SEED_ORDER_COUNT, 10000),
+  orderCount: parseOrderCount(process.env.SEED_ORDER_COUNT, 10000),
   batchSize: parseCount(process.env.SEED_BATCH_SIZE, 50),
 })
 

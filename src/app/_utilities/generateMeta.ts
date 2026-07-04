@@ -2,16 +2,16 @@ import type { Metadata } from 'next'
 
 import type { Page, Product } from '../../payload/payload-types'
 import { STORE_NAME } from '../../constants/brand'
+import { getMediaURL } from './getMediaURL'
 import { mergeOpenGraph } from './mergeOpenGraph'
 
 export const generateMeta = async (args: { doc: Page | Product }): Promise<Metadata> => {
   const { doc } = args || {}
 
   const ogImage =
-    typeof doc?.meta?.image === 'object' &&
-    doc?.meta?.image !== null &&
-    'url' in doc?.meta?.image &&
-    `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.meta.image.url}`
+    typeof doc?.meta?.image === 'object' && doc?.meta?.image !== null
+      ? getMediaURL(doc.meta.image)
+      : undefined
 
   return {
     title: doc?.meta?.title || STORE_NAME,

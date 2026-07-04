@@ -166,6 +166,7 @@ export interface Media {
   updatedAt: string;
   createdAt: string;
   url?: string;
+  cdnUrl?: string;
   filename?: string;
   mimeType?: string;
   filesize?: number;

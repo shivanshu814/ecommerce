@@ -45,6 +45,15 @@ export const DEMO_CATEGORY_MEDIA: Record<string, string> = {
   'Online courses': 'tech',
 }
 
+export const DEMO_MEDIA_BY_ALT: Record<string, string> = {
+  Shirts: 'fashion',
+  'E-Book': 'books',
+  'Online Course': 'tech',
+}
+
+export const getCatalogExternalImageUrl = (key: string): string =>
+  `https://picsum.photos/seed/megamart-${key}/800/600`
+
 export const CATALOG_CATEGORIES: CatalogCategory[] = [
   { name: 'Smartphones', imageKey: 'electronics', brands: ['Apple', 'Samsung', 'Google', 'OnePlus'], productTypes: ['iPhone 15 Pro', 'Galaxy S24', 'Pixel 8', 'Nord 4'], modifiers: ['128GB', '256GB', '512GB', 'Unlocked'], priceMin: 69900, priceMax: 129900 },
   { name: 'Laptops', imageKey: 'tech', brands: ['Apple', 'Dell', 'Lenovo', 'ASUS'], productTypes: ['MacBook Air', 'XPS 13', 'ThinkPad X1', 'ZenBook'], modifiers: ['M3', 'Intel i7', '16GB RAM', '512GB SSD'], priceMin: 89900, priceMax: 249900 },
