@@ -2,8 +2,8 @@
 import Link from 'next/link'
 
 import { Category } from '../../../../payload/payload-types'
-import { getMediaURL } from '../../../_utilities/getMediaURL'
 import { useFilter } from '../../../_providers/Filter'
+import { getMediaURL } from '../../../_utilities/getMediaURL'
 
 import classes from './index.module.scss'
 
