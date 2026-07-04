@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { Payload } from 'payload'
 
+import { convertUsdCentsToInrPaise } from '../../constants/currency'
 import {
   buildPriceJSON,
   buildProductLayout,
@@ -8,7 +9,6 @@ import {
   getCatalogCategory,
 } from './catalog'
 import { ensureCatalogMedia } from './refresh-catalog'
-import { convertUsdCentsToInrPaise } from '../../constants/currency'
 import { seedUsers } from './users'
 
 type BulkSeedOptions = {
@@ -17,6 +17,7 @@ type BulkSeedOptions = {
   userCount?: number
   orderCount?: number
   batchSize?: number
+  skipUsers?: boolean
 }
 
 const parseCount = (value: string | undefined, fallback: number): number => {
@@ -49,6 +50,7 @@ export const seedBulk = async (payload: Payload, options: BulkSeedOptions = {}):
     userCount,
     orderCount,
     batchSize,
+    skipUsers,
   } = {
     ...getBulkSeedOptions(),
     ...options,
@@ -58,11 +60,16 @@ export const seedBulk = async (payload: Payload, options: BulkSeedOptions = {}):
     `— Seeding bulk data (${categoryCount} categories, ${productCount} products, ${userCount} users, ${orderCount} orders)...`,
   )
 
-  const { customerIds } = await seedUsers(payload, {
-    customerCount: userCount,
-    batchSize,
-    clearExisting: true,
-  })
+  let customerIds: string[] = []
+
+  if (!skipUsers) {
+    const seededUsers = await seedUsers(payload, {
+      customerCount: userCount,
+      batchSize,
+      clearExisting: true,
+    })
+    customerIds = seededUsers.customerIds
+  }
 
   const mediaMap = await ensureCatalogMedia(payload)
 
@@ -143,7 +150,7 @@ export const seedBulk = async (payload: Payload, options: BulkSeedOptions = {}):
         const quantity = (index % 3) + 1
         const unitPrice = convertUsdCentsToInrPaise(
           catalogCategory.priceMin +
-            ((index * 7919) % (catalogCategory.priceMax - catalogCategory.priceMin || 1)),
+          ((index * 7919) % (catalogCategory.priceMax - catalogCategory.priceMin || 1)),
         )
         const total = unitPrice * quantity
 

@@ -4,10 +4,14 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "license": "MIT",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts nodemon",
     "seed": "rm -rf media && cross-env PAYLOAD_SEED=true PAYLOAD_DROP_DATABASE=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:bulk": "rm -rf media && cross-env PAYLOAD_SEED=true SEED_BULK=true PAYLOAD_DROP_DATABASE=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
+    "seed:bulk-data": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/payload/seed/run-bulk-only.ts",
     "seed:users": "cross-env PAYLOAD_SEED_USERS=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:refresh-catalog": "cross-env PAYLOAD_REFRESH_CATALOG=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",
     "seed:refresh-currency": "cross-env PAYLOAD_REFRESH_CURRENCY=true PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/server.ts",

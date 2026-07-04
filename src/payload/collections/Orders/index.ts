@@ -6,7 +6,6 @@ import { adminsOrOrderedBy } from './access/adminsOrOrderedBy'
 import { clearUserCart } from './hooks/clearUserCart'
 import { populateOrderedBy } from './hooks/populateOrderedBy'
 import { updateUserPurchases } from './hooks/updateUserPurchases'
-import { LinkToRazorpayPayment } from './ui/LinkToRazorpayPayment'
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
@@ -48,9 +47,7 @@ export const Orders: CollectionConfig = {
       type: 'text',
       admin: {
         position: 'sidebar',
-        components: {
-          Field: LinkToRazorpayPayment,
-        },
+        readOnly: true,
       },
     },
     {

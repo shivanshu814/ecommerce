@@ -1,4 +1,5 @@
-import { Banner } from 'payload/components'
+'use client'
+
 import React from 'react'
 import { Link } from 'react-router-dom'
 
@@ -11,9 +12,9 @@ const baseClass = 'before-dashboard'
 const BeforeDashboard: React.FC = () => {
   return (
     <div className={baseClass}>
-      <Banner className={`${baseClass}__banner`} type="success">
+      <div className={`${baseClass}__banner`}>
         <h4>{`MegaMart store dashboard`}</h4>
-      </Banner>
+      </div>
       Quick actions for your store:
       <ul className={`${baseClass}__instructions`}>
         <li>
