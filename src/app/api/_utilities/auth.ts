@@ -7,7 +7,27 @@ import type { User } from '../../../payload/payload-types'
 import { checkRole } from '../../../payload/collections/Users/checkRole'
 
 const getTokenFromRequest = (req?: NextRequest): string | undefined => {
-  return req?.cookies.get('payload-token')?.value || cookies().get('payload-token')?.value
+  if (req) {
+    const cookieToken = req.cookies.get('payload-token')?.value
+    if (cookieToken) {
+      return cookieToken
+    }
+
+    const authHeader = req.headers.get('authorization')
+    if (authHeader?.startsWith('Bearer ')) {
+      return authHeader.slice(7)
+    }
+
+    const cookieHeader = req.headers.get('cookie')
+    if (cookieHeader) {
+      const match = cookieHeader.match(/(?:^|;\s*)payload-token=([^;]+)/)
+      if (match?.[1]) {
+        return decodeURIComponent(match[1])
+      }
+    }
+  }
+
+  return cookies().get('payload-token')?.value
 }
 
 export const getAuthenticatedUser = async (
